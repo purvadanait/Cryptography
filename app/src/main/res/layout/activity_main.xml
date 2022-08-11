@@ -30,7 +30,8 @@
                 android:layout_gravity="left"
                 android:text="Input Text"
                 android:textStyle="bold"
-                android:textSize="18sp"></TextView>
+                android:textSize="18sp"
+                android:textColor="@color/white"></TextView>
 
         </LinearLayout>
 
