@@ -115,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:layout_weight="1"
-                android android:textColor="@color/white"
+                android:textColor="@color/white"
                 android:textStyle="bold"
                 android:text="Encrypted Text"
                 android:textSize="18dp"
