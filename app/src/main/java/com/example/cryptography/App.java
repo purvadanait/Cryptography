@@ -36,7 +36,8 @@ public class App extends Application {
             public void onClick(DialogInterface dialogInterface, int i) {
 
             }
-        })
+        });
+        alert.show();
     }
 
 }
