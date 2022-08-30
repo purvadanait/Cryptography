@@ -42,10 +42,55 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
+    public String decrypt(String value, Context c){
+        String coded;
+        String result=null;
+        if(value.startsWith("code==")){
+            coded= value.substring(6, value.length()).trim();
+        }
+        else {
+            coded=value.trim();
+        }
+        try {
+            byte[] bytesDecoded = Base64.decode(coded.getBytes(StandardCharsets.UTF_8), Base64.DEFAULT);
+            SecretKeySpec key = new SecretKeySpec(keytext.getText().toString().getBytes(), "DES");
+            Cipher cipher = Cipher.getInstance("DES/ECB/ZeroBytePadding");
+            cipher.init(Cipher.DECRYPT_MODE, key);
+            byte[] textDecrypted = cipher.doFinal(bytesDecoded);
+            result = new String(textDecrypted);
+        }
+        catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            App.DialogMaker(c, "Encrypt Error", "Error"+"\n"+e.getMessage());
+            return "Encrypt Error";
+        }
+        catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+            App.DialogMaker(c, "Encrypt Error", "Error"+"\n"+e.getMessage());
+            return "Encrypt Error";
+        }
+        catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+            App.DialogMaker(c, "Encrypt Error", "Error"+"\n"+e.getMessage());
+            return "Encrypt Error";
+        }
+        catch (BadPaddingException e) {
+            e.printStackTrace();
+            App.DialogMaker(c, "Encrypt Error", "Error"+"\n"+e.getMessage());
+            return "Encrypt Error";
+        }
+        catch (InvalidKeyException e) {
+            e.printStackTrace();
+            App.DialogMaker(c, "Encrypt Error", "Error"+"\n"+e.getMessage());
+            return "Encrypt Error";
+        } catch (Exception e) {
+            e.printStackTrace();
+            App.DialogMaker(c, "Encrypt Error", "Error"+"\n"+e.getMessage());
+            return "Encrypt Error";
+        }
+        return result;
 
-
-
-
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public String encrypt(String value, Context c){
