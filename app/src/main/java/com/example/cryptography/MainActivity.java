@@ -3,9 +3,17 @@ package com.example.cryptography;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -40,6 +48,127 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            Window window = this.getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(Color.parseColor("#2a9db7"));
+        }
+        c = MainActivity.this;
+        normaltext = findViewById(R.id.normaltext);
+        keytext = findViewById(R.id.key);
+        ciphertext = findViewById(R.id.ciphertext);
+        copy_cipher = findViewById(R.id.copy_cipher);
+        delete_cipher = findViewById(R.id.delete_cipher);
+        copy_normal = findViewById(R.id.copy_normal);
+        delete_normal = findViewById(R.id.delete_normal);
+        encrypt = findViewById(R.id.encrypt);
+        decrypt = findViewById(R.id.decrypt);
+        char_count = findViewById(R.id.char_count);
+        char_count2 = findViewById(R.id.char_count2);
+
+        encrypt.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View view) {
+                if (normaltext.getText().toString().matches("")||keytext.getText().toString().matches("")){
+                    App.ToastMaker(c, "Enter Text and Secret Key");
+                }
+                else if(keytext.getText().toString().length()!=8){
+                    App.ToastMaker(c, "Enter 8 digit key");
+                }
+                else {
+                    ciphertext.setText(encrypt(normaltext.getText().toString(), c));
+
+                }
+            }
+        });
+
+        decrypt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(ciphertext.getText().toString().matches("")||keytext.getText().toString().matches("")){
+                    App.ToastMaker(c, "Enter encrypted text and the key");
+                }
+                else if(keytext.getText().toString().length()!=8){
+                    App.ToastMaker(c, "Enter 8 digit key");
+                }
+                else{
+                    normaltext.setText(decrypt(ciphertext.getText().toString(),c ));
+                }
+            }
+        });
+
+        copy_normal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("cipher text", normaltext.getText().toString());
+                clipboard.setPrimaryClip(clip);
+                App.ToastMaker(c, "Input text copied");
+            }
+        });
+
+        copy_cipher.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("cipher text", ciphertext.getText().toString());
+                clipboard.setPrimaryClip(clip);
+                App.ToastMaker(c, "Encrypted text copied");
+            }
+        });
+
+        delete_normal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                normaltext.setText("");
+            }
+        });
+
+        delete_cipher.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ciphertext.setText("");
+            }
+        });
+        normaltext.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                char_count.setText(normaltext.getText().toString().length()+"");
+
+            }
+        });
+
+        ciphertext.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                char_count2.setText(ciphertext.getText().toString().length()+"");
+
+            }
+        });
+
+
     }
 
     public String decrypt(String value, Context c){
